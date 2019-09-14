@@ -11,31 +11,29 @@ import UIKit
 class DisplayViewController: UIViewController {
 
     var previousVC = ToDoTableViewController()
-    var selectedToDo = ToDo()
+    var selectedToDo : ToDoCoreData?
     
     @IBOutlet weak var Name: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()
-        Name.text = selectedToDo.name
+        Name.text = selectedToDo?.name
         
         
     }
     
     @IBAction func CompleteTapped(_ sender: Any) {
-        var index = 0
-        for i in previousVC.toDos{
-            print(index)
-            if i.name == selectedToDo.name{
-                
-                previousVC.toDos.remove(at: index)
-                previousVC.tableView.reloadData()
-                navigationController?.popViewController(animated: true)
-                break
-                
-            }
-            index += 1
-        }
+ 
+        if let context = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext {
             
+            if let theToDo = selectedToDo{
+                context.delete(theToDo)
+
+                navigationController?.popViewController(animated: true)
+
+            }
+            
+        }
     }
     
 }
+
